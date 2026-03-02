@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  master
+  admin
+}
+
+enum MediaKind {
+  payment
+  media
+}
+
+model City {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  users   User[]
+  reports Report[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  telegramId String    @unique
+  name       String
+  username   String?
+  photoUrl   String?
+  role       UserRole  @default(master)
+  cityId     Int?
+  city       City?     @relation(fields: [cityId], references: [id])
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  reports    Report[]
+}
+
+model Report {
+  id                          Int            @id @default(autoincrement())
+  userId                      Int
+  cityId                      Int
+  createdAt                   DateTime       @default(now())
+  contractorName              String
+  date                        DateTime
+  orderNumber                 String
+  paidByCustomer              Decimal        @db.Decimal(10, 2)
+  paymentReceiver             String
+  distanceMiles               Int
+  localTvTransport            Int            @default(0)
+  onStandExistingMount        Int            @default(0)
+  standardMounting            Int            @default(0)
+  largeTvMounting             Int            @default(0)
+  frameTvMounting             Int            @default(0)
+  fireplaceInstallation       Int            @default(0)
+  mantelMountInstallation     Int            @default(0)
+  solidSurfaceMounting        Int            @default(0)
+  tvUnmounting                Int            @default(0)
+  cableChannelInstallation    Int            @default(0)
+  wireRemoval                 Int            @default(0)
+  cableManagement             Int            @default(0)
+  soundbarInstallation        Int            @default(0)
+  outletInstallation          Int            @default(0)
+  shelfInstallation           Int            @default(0)
+  paintingPictureHanging      Int            @default(0)
+  tvBacklightInstallation     Int            @default(0)
+  psXboxInstallation          Int            @default(0)
+  furnitureAssemblyHours      Int            @default(0)
+  extraWork                   Decimal        @db.Decimal(10, 2) @default(0)
+  extraMaterial               Decimal        @db.Decimal(10, 2) @default(0)
+  tolls                       Decimal        @db.Decimal(10, 2) @default(0)
+  tips                        Decimal        @db.Decimal(10, 2) @default(0)
+  comments                    String?
+  messageFlag                 Boolean        @default(false)
+  addons                      Boolean
+  techsQuantity               Int
+  computedTotal               Decimal        @db.Decimal(10, 2)
+  computedCompanyTake         Decimal        @db.Decimal(10, 2)
+  computedTechTake            Decimal        @db.Decimal(10, 2)
+  user                        User           @relation(fields: [userId], references: [id])
+  city                        City           @relation(fields: [cityId], references: [id])
+  materials                   ReportMaterial[]
+  media                       ReportMedia[]
+}
+
+model Material {
+  id        Int              @id @default(autoincrement())
+  name      String           @unique
+  isActive  Boolean          @default(true)
+  reports   ReportMaterial[]
+}
+
+model ReportMaterial {
+  id         Int      @id @default(autoincrement())
+  reportId   Int
+  materialId Int
+  qty        Int      @default(0)
+  report     Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  material   Material @relation(fields: [materialId], references: [id])
+
+  @@unique([reportId, materialId])
+}
+
+model ReportMedia {
+  id            Int       @id @default(autoincrement())
+  reportId      Int
+  kind          MediaKind
+  filename      String
+  mimetype      String
+  size          Int
+  createdAt     DateTime  @default(now())
+  storageStatus String    @default("pending")
+  report        Report    @relation(fields: [reportId], references: [id], onDelete: Cascade)
+}

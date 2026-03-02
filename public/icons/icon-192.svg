@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-label="Invoice PWA icon">
+  <rect width="192" height="192" rx="28" fill="#0f172a"/>
+  <rect x="38" y="28" width="116" height="136" rx="10" fill="#3b82f6"/>
+  <rect x="52" y="50" width="88" height="12" rx="6" fill="#dbeafe"/>
+  <rect x="52" y="74" width="88" height="12" rx="6" fill="#dbeafe"/>
+  <rect x="52" y="98" width="62" height="12" rx="6" fill="#dbeafe"/>
+  <circle cx="132" cy="144" r="14" fill="#1d4ed8"/>
+  <path d="M125 144h14M132 137v14" stroke="#dbeafe" stroke-width="4" stroke-linecap="round"/>
+</svg>
